@@ -1,0 +1,58 @@
+---
+version: '2'
+services:
+  zookeeper:
+    restart: on-failure 
+    hostname: zookeeper
+    image: confluentinc/cp-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+
+  kafka0:
+    restart: on-failure 
+    image: confluentinc/cp-kafka
+    ports:
+      - '9092:9092'
+      - '29094:29094'
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: A://kafka0:29092,B://kafka0:9092,C://kafka0:29094
+      KAFKA_ADVERTISED_LISTENERS: A://kafka0:29092,B://localhost:9092,C://:29094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: A:PLAINTEXT,B:PLAINTEXT,C:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: A
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+
+
+  processing:
+    hostname: processing
+    container_name: processing
+    build:
+      dockerfile: Dockerfile_processing
+
+
+  ingestion:
+    hostname: ingestion
+    container_name: ingestion
+    build:
+      dockerfile: Dockerfile_ingestion
+
+  db_wrapper:
+    hostname: db_wrapper
+    container_name: db_wrapper
+    build:
+      dockerfile: Dockerfile_db_wrapper
+
+  reporting:
+    hostname: reporting
+    container_name: reporting
+    build:
+      dockerfile: Dockerfile_reporting
