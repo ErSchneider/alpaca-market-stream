@@ -34,13 +34,15 @@ def process(input_data):
             print("SKIP")
             ret = None
         else:
-            ret =  sum(current_batch) / (len(current_batch))
+            ret =  {'datetime': current_second
+                    ,'average_spread': sum(current_batch) / (len(current_batch))
+                    ,'minimum_spread': min(current_batch)
+                    , 'maximum_spread': max(current_batch)}
 
         #reset batch
         current_batch = []
         current_batch_second = current_second
-        print(current_batch_second, ret)
-        return ret
+        return json.dumps(ret, default=str)
 
 
 i = 0
@@ -59,6 +61,5 @@ while True:
         
     if output_data:
         print('prod', output_data)
-        #build json with datetime etc and then encode and produce
-        #p.produce('processed-data', output_data.encode('utf-8'))
+        p.produce('processed-data', output_data.encode('utf-8'))
     i+=1
