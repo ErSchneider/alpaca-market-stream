@@ -3,7 +3,11 @@ import time
 import config
 import json
 from datetime import datetime  
+import logging
 
+log = logging.getLogger()
+
+log.info("Waiting for kafka to start")
 time.sleep(20)
 
 c = Consumer({'bootstrap.servers': config.KAFKA_HOST,
@@ -30,7 +34,6 @@ def process(input_data):
     else:
         #prevent division by zero attempt
         if (len(current_batch) == 0): 
-            print("SKIP")
             ret = None
         else:
             ret =  {'datetime': current_second
@@ -52,13 +55,12 @@ while True:
     if input is None:
         continue
     if input.error():
-        print(f'Error {input.error()}')
+        log.error(input.error())
         continue
 
     input_data = json.loads(input.value().decode('utf-8').replace("Quote(", "").replace(")", "").replace("'", '"'))
     output_data = process(input_data)
         
     if output_data:
-        print('prod', output_data)
         p.produce('processed-data', output_data.encode('utf-8'))
     i+=1

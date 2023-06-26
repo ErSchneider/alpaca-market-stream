@@ -1,6 +1,12 @@
 import config
 from confluent_kafka import Producer
 import alpaca_trade_api as tradeapi
+import logging
+
+
+log = logging.getLogger()
+
+log.info("Starting ingestion MS")
 
 p = Producer({"bootstrap.servers": config.KAFKA_HOST})
 base_url = "https://paper-api.alpaca.markets"
@@ -19,11 +25,12 @@ conn = tradeapi.stream.Stream(
 )
 
 async def ingest(q):
-
     p.produce("raw-data", str(q))
 
     p.flush() 
 
 
-conn.subscribe_quotes(ingest, "TUI1")##AAPL
+conn.subscribe_quotes(ingest, config.STOCK_CODE)
+log.info(f"Subscribed to quote {config.STOCK_CODE}")
+
 conn.run()

@@ -3,6 +3,11 @@ import config
 import sqlite3
 import json
 from datetime import datetime
+import logging
+
+log = logging.getLogger()
+
+log.info("Waiting for kafka to start")
 
 c = Consumer(
     {
@@ -21,6 +26,7 @@ def set_up_db():
     cur.execute(
         """CREATE TABLE IF NOT EXISTS Aggregated_spreads_in_v0 (
         datetime DATETIME
+        , stock_code STRING
         , average_spread FLOAT
         , minimum_spread FLOAT
         , maximum_spread FLOAT
@@ -31,11 +37,12 @@ def set_up_db():
 def insert(cur, con, data):
     data = [
         datetime.strptime(data["datetime"], "%Y-%m-%d %H:%M:%S"),
+        config.STOCK_CODE,
         data["average_spread"],
         data["minimum_spread"],
         data["maximum_spread"],
     ]
-    cur.execute("INSERT INTO Aggregated_spreads_in_v0 VALUES(?,?,?,?)", data)
+    cur.execute("INSERT INTO Aggregated_spreads_in_v0 VALUES(?,?,?,?,?)", data)
     con.commit()
 
 
@@ -43,12 +50,13 @@ cur, con = set_up_db()
 
 while True:
     input = c.poll()
-    if input is None:
+    data = json.loads(input.value().decode("utf-8"))
+
+    if not data:
+        log.warning("No data")
         continue
     if input.error():
-        print(f"Error {input.error()}")
+        log.error(input.error())
         continue
-
-    data = json.loads(input.value().decode("utf-8"))
 
     insert(cur, con, data)
