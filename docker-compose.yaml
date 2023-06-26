@@ -36,23 +36,23 @@ services:
     hostname: processing
     container_name: processing
     build:
-      dockerfile: Dockerfile_processing
+      dockerfile: processing/Dockerfile_processing
 
 
   ingestion:
     hostname: ingestion
     container_name: ingestion
     build:
-      dockerfile: Dockerfile_ingestion
+      dockerfile: ingestion/Dockerfile_ingestion
 
   db_wrapper:
     hostname: db_wrapper
     container_name: db_wrapper
     build:
-      dockerfile: Dockerfile_db_wrapper
+      dockerfile: db_wrapper/Dockerfile_db_wrapper
 
   reporting:
     hostname: reporting
     container_name: reporting
     build:
-      dockerfile: Dockerfile_reporting
+      dockerfile: reporting/Dockerfile_reporting

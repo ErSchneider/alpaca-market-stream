@@ -19,8 +19,7 @@ current_batch = []
 def process(input_data):
     global current_batch
     global current_batch_second
-    #{'ask_exchange': 'V', 'ask_price': 170.32, 'ask_size': 2, 'bid_exchange': 'V', 'bid_price': 170.3, 'bid_size': 2,
-    #  'conditions': ['R'], 'symbol': 'AAPL', 'tape': 'C', 'timestamp': 1683120948467769272}
+
     spread = input_data['ask_price'] - input_data['bid_price']
     current_second = datetime.fromtimestamp(input_data['timestamp'] // 1000000000) # floor to second, input data in UTC
 

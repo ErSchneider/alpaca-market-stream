@@ -25,5 +25,5 @@ async def ingest(q):
     p.flush() 
 
 
-conn.subscribe_quotes(ingest, "AAPL")
+conn.subscribe_quotes(ingest, "TUI1")##AAPL
 conn.run()

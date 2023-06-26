@@ -1,6 +1,6 @@
-FROM python:3
+FROM python:3.8
 RUN pip install confluent_kafka
 RUN apt-get update && apt-get install -y iputils-ping nmap 
-ADD db_wrapper.py /
+ADD processing/processing.py /
 ADD config.py /
-CMD [ "python", "./db_wrapper.py" ]
+CMD [ "python", "./processing.py" ]
