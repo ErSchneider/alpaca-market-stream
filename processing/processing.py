@@ -37,9 +37,11 @@ def process(input_data):
             ret = None
         else:
             ret =  {'datetime': current_second
-                    ,'average_spread': sum(current_batch) / (len(current_batch))
-                    ,'minimum_spread': min(current_batch)
-                    , 'maximum_spread': max(current_batch)}
+                    , 'stock_code': input_data['symbol']
+                    , 'average_spread': sum(current_batch) / (len(current_batch))
+                    , 'minimum_spread': min(current_batch)
+                    , 'maximum_spread': max(current_batch)
+                    , 'sample_size': len(current_batch)}
 
         #reset batch
         current_batch = []
