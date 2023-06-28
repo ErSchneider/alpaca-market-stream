@@ -11,6 +11,7 @@ alpaca-market-stream is a docker based streaming solution to calculate, aggregat
 - change `STOCK_CODE` if needed
 - create and activate a virtual environment if needed
 - install requirements via `pip install -r requirements.txt`
+- start docker
 - start the application via docker compose `docker-compose up --build`
 
 All resulting data can be found in the sqlite database `reporting.db` in the `db_wrapper` container

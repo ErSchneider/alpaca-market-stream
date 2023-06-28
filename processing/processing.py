@@ -36,17 +36,18 @@ def process(input_data):
         if (len(current_batch) == 0): 
             ret = None
         else:
-            ret =  {'datetime': current_second
+            vals =  {'datetime': current_second
                     , 'stock_code': input_data['symbol']
                     , 'average_spread': sum(current_batch) / (len(current_batch))
                     , 'minimum_spread': min(current_batch)
                     , 'maximum_spread': max(current_batch)
                     , 'sample_size': len(current_batch)}
+            ret = json.dumps(vals, default=str)
 
         #reset batch
         current_batch = []
         current_batch_second = current_second
-        return json.dumps(ret, default=str)
+        return ret
 
 
 i = 0
@@ -63,6 +64,8 @@ while True:
     input_data = json.loads(input.value().decode('utf-8').replace("Quote(", "").replace(")", "").replace("'", '"'))
     output_data = process(input_data)
         
-    if output_data:
-        p.produce('processed-data', output_data.encode('utf-8'))
+    if not output_data:
+        continue
+    
+    p.produce('processed-data', output_data.encode('utf-8'))
     i+=1

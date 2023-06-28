@@ -9,7 +9,7 @@ log = logging.getLogger()
 log.info("Starting ingestion MS")
 
 p = Producer({"bootstrap.servers": config.KAFKA_HOST})
-base_url = "https://paper-api.alpaca.markets"
+base_url = config.BASE_URL
 
 
 api = tradeapi.REST(

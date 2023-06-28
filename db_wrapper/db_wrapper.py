@@ -7,7 +7,7 @@ import logging
 
 log = logging.getLogger()
 
-log.info("Waiting for kafka to start")
+log.info("Starting db_wrapper MS")
 
 c = Consumer(
     {
