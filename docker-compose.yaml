@@ -31,13 +31,13 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
 
-
-  processing:
-    hostname: processing
-    container_name: processing
+  spark:
+    hostname: spark
+    container_name: spark
     build:
-      dockerfile: processing/Dockerfile_processing
-
+      dockerfile: spark/Dockerfile
+    ports: 
+      - 4040:4040
 
   ingestion:
     hostname: ingestion

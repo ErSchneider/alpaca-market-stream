@@ -37,28 +37,29 @@ def set_up_db():
 
 def insert(cur, con, data):
     data = [
-        datetime.strptime(data["datetime"], "%Y-%m-%d %H:%M:%S"),
-        data['stock_code'],
-        data["average_spread"],
-        data["minimum_spread"],
-        data["maximum_spread"],
+        datetime.strptime(data["window"]["start"], "%Y-%m-%dT%H:%M:%S.%fZ"),
+        config.STOCK_CODE,
+        data["avg_spread"],
+        data["min_spread"],
+        data["max_spread"],
         data["sample_size"]
     ]
     cur.execute("INSERT INTO Aggregated_spreads_in_v0 VALUES(?,?,?,?,?,?)", data)
     con.commit()
 
 
+
 cur, con = set_up_db()
 
+
 while True:
-    input = c.poll()
-    data = json.loads(input.value().decode("utf-8"))
-
-    if input.error():
-        log.error(input.error())
+    message = c.poll(1.0)
+    if message is None:
         continue
-    if not data:
-        log.warning("No data")
+    if message.error():
+        print(message.error())
         continue
 
-    insert(cur, con, data)
+    value = json.loads(message.value())
+
+    insert(cur, con, value)

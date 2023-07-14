@@ -2,7 +2,7 @@ import config
 from confluent_kafka import Producer
 import alpaca_trade_api as tradeapi
 import logging
-
+import json
 
 log = logging.getLogger()
 
@@ -25,7 +25,8 @@ conn = tradeapi.stream.Stream(
 )
 
 async def ingest(q):
-    p.produce("raw-data", str(q))
+    p.produce(topic="raw-data",
+              value= json.dumps(q.__dict__['_raw']))
 
     p.flush() 
 

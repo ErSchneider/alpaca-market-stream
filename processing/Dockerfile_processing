@@ -1,6 +1,0 @@
-FROM python:3.8
-RUN pip install confluent_kafka
-RUN apt-get update && apt-get install -y iputils-ping nmap 
-ADD processing/processing.py /
-ADD config.py /
-CMD [ "python", "./processing.py" ]
