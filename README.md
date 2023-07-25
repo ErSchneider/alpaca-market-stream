@@ -1,4 +1,4 @@
-alpaca-market-stream is a docker based streaming solution to calculate, aggregate and save the spread of a given stock in real time. The application revieces quotes from alpaca, the spread is calculated as the difference between ask and bid price and aggregated. For each timeframe different metrics are calculated. The microservice architecure looks as follows:
+alpaca-market-stream is a docker based streaming solution to calculate, aggregate and save the spread of a given stock in real time. The application recieves quotes from alpaca, the spread is calculated as the difference between ask and bid price and aggregated. For each timeframe different metrics are calculated. The microservice architecure looks as follows:
 
 ![microservices](examples/microservices.png "Architecture")
 
@@ -10,8 +10,6 @@ alpaca-market-stream is a docker based streaming solution to calculate, aggregat
 - Fill in your alpaca key and secret
 - Change credentials in `config.py` and `docker-compose.yaml` if wished
 - Change `STOCK_CODE` if needed
-- Create and activate a virtual environment if needed
-- Install requirements via `pip install -r requirements.txt`
 - Start docker
 - Start the application via docker compose `docker-compose up --build`
 
@@ -19,7 +17,8 @@ alpaca-market-stream is a docker based streaming solution to calculate, aggregat
 - Navigate to http://localhost:8086/
 - Log in with the placeholder credentials (or your changed ones)
 - Explore -> FROM testbucket -> Filter testmeasurement -> select metrics -> Submit
-- Change settings, view raw data and create dashboards directly in influxDB as needed
+- Change settings, view raw data and create dashboards directly in the influxDB GUI
+- To see active spark jobs, navigate to http://localhost:4040/jobs/
 
 ### Examples
 

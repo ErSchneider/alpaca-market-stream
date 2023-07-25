@@ -42,7 +42,7 @@ services:
     hostname: ingestion
     container_name: ingestion
     build:
-      dockerfile: ingestion/Dockerfile_ingestion
+      dockerfile: ingestion/Dockerfile
 
   influxdb:
     image: influxdb:2.0.8
