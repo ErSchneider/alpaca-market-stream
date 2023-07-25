@@ -5,15 +5,15 @@ alpaca-market-stream is a docker based streaming solution to calculate, aggregat
 ### How to run
 
 - To use it you need to obtain access to [alpaca.markets](https://alpaca.markets/), see the [getting started documentation](https://alpaca.markets/docs/market-data/getting-started/).
-- [download and install docker](https://www.docker.com/products/docker-desktop/)
-- create `config.py` using the `example_config.py` as a template
-- fill in your alpaca key and secret
-- change credentials in `config.py` and `docker-compose.yaml` if wished
-- change `STOCK_CODE` if needed
-- create and activate a virtual environment if needed
-- install requirements via `pip install -r requirements.txt`
-- start docker
-- start the application via docker compose `docker-compose up --build`
+- [Download and install docker](https://www.docker.com/products/docker-desktop/)
+- Create `config.py` using the `example_config.py` as a template
+- Fill in your alpaca key and secret
+- Change credentials in `config.py` and `docker-compose.yaml` if wished
+- Change `STOCK_CODE` if needed
+- Create and activate a virtual environment if needed
+- Install requirements via `pip install -r requirements.txt`
+- Start docker
+- Start the application via docker compose `docker-compose up --build`
 
 ### See output
 - Navigate to http://localhost:8086/
