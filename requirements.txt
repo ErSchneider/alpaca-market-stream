@@ -1,2 +1,3 @@
 confluent_kafka
 alpaca_trade_api
+influxdb-client

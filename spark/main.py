@@ -1,17 +1,18 @@
-import pyspark
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from pyspark.sql import SparkSession
 import config
+from influxdb_client import InfluxDBClient, Point, WritePrecision
+from influxdb_client.client.write_api import SYNCHRONOUS
 
 packages = [
-    f"org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2",
+    "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.2",
     "org.apache.kafka:kafka-clients:3.2.1",
 ]
 
 spark = (
     SparkSession.builder.master("local")
-    .appName("kafka-example")
+    .appName(config.APPNAME)
     .config("spark.jars.packages", ",".join(packages))
     .getOrCreate()
 )
@@ -64,26 +65,33 @@ aggregated_df = (
     )
 )
 
+influxdb_client = InfluxDBClient(
+    url=config.INFLUXDB_HOST,
+    token=config.INFLUXDB_TOKEN,
+    org=config.INFLUXDB_ORG,
+    username=config.INFLUXDB_USERNAME,
+    password=config.INFLUXDB_PASSWORD   
+)
 
-# to console
-# query = aggregated_df \
-#     .writeStream \
-#     .outputMode("append") \
-#     .format("console") \
-#     .option("truncate", False) \
-#     .start()
+query = (
+    aggregated_df.writeStream
+    .outputMode("complete")
+    .foreachBatch(lambda df, batch_id: write_to_influxdb(df, batch_id))
+    .start()
+)
+
+def write_to_influxdb(df, batch_id):
+    pandas_df = df.toPandas()
+
+    write_api = influxdb_client.write_api(write_options=SYNCHRONOUS)
+    for _, row in pandas_df.iterrows():
+        point = Point('testmeasurement') \
+            .time(row['window']['start'], WritePrecision.NS) \
+            .field("min_spread", row['min_spread']) \
+            .field("max_spread", row['max_spread']) \
+            .field("avg_spread", row['avg_spread']) \
+            .field("sample_size", row['sample_size'])
+        write_api.write(bucket=config.INFLUXDB_BUCKET, record=point)
 
 
-kafka_producer_properties = {
-    "kafka.bootstrap.servers": config.KAFKA_HOST,
-    "value.serializer": "org.apache.kafka.common.serialization.StringSerializer",
-}
-
-aggregated_df.selectExpr(
-    "CAST(window AS STRING) AS key",
-    "to_json(struct(*)) AS value"
-).writeStream.format("kafka").option(
-    "kafka.bootstrap.servers", config.KAFKA_HOST
-).option("topic", "processed-data").option(
-    "checkpointLocation", "/tmp/checkpoint"
-).start().awaitTermination()
+query.awaitTermination()

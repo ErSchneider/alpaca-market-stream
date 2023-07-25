@@ -2,7 +2,7 @@
 version: '2'
 services:
   zookeeper:
-    restart: on-failure 
+    restart: on-failure
     hostname: zookeeper
     image: confluentinc/cp-zookeeper
     ports:
@@ -11,9 +11,8 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-
   kafka0:
-    restart: on-failure 
+    restart: on-failure
     image: confluentinc/cp-kafka
     ports:
       - '9092:9092'
@@ -36,7 +35,7 @@ services:
     container_name: spark
     build:
       dockerfile: spark/Dockerfile
-    ports: 
+    ports:
       - 4040:4040
 
   ingestion:
@@ -45,14 +44,19 @@ services:
     build:
       dockerfile: ingestion/Dockerfile_ingestion
 
-  db_wrapper:
-    hostname: db_wrapper
-    container_name: db_wrapper
-    build:
-      dockerfile: db_wrapper/Dockerfile_db_wrapper
-
-  reporting:
-    hostname: reporting
-    container_name: reporting
-    build:
-      dockerfile: reporting/Dockerfile_reporting
+  influxdb:
+    image: influxdb:2.0.8
+    container_name: influxdb
+    ports:
+      - 8086:8086
+    volumes:
+      - ./influxdb-data:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin123
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123
+      - DOCKER_INFLUXDB_INIT_ORG=testorg
+      - DOCKER_INFLUXDB_INIT_BUCKET=testbucket
+      - DOCKER_INFLUXDB_INIT_RETENTION=30d
+      - DOCKER_INFLUXDB_AUTH_ENABLED=true
+      - DOCKER_INFLUXDB_INIT_TOKEN=testtoken
