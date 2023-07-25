@@ -3,5 +3,4 @@ __pycache__/
 .vscode/
 db/
 *.ipynb
-grafana-data/
 influxdb-data/
