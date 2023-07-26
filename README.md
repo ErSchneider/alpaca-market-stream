@@ -22,7 +22,7 @@ alpaca-market-stream is a docker based streaming solution to calculate, aggregat
 
 ### Examples
 
-The following plots show a full day (2023-06-27 within the opening hours of the stock exchange) of processing AAPL quotes. Data is displayed as moving average with a window of 120 seconds. Velocity peaked at 361 quotes per second.
+The following plots show reporting visualizations in the InfluxDB frontend. Data is displayed as moving average with a window of 15 seconds.
 
 ![quotes](examples/processed_quotes.png )
 ![spreads](examples/aggregated_spreads.png )
